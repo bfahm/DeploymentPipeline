@@ -9,15 +9,19 @@ namespace DeploymentPipelineTool
     {
         static async Task Main(string[] args)
         {
+            AppSettings appSettings = new();
+
             List<IPipeline> pipelines = new List<IPipeline>
             {
-                new FilesPipeline(Constants.PAYROLL_API_LIVE_PATH, Constants.PAYROLL_API_BACKUP_PATH),
-                new FilesPipeline(Constants.PAYROLL_FE_LIVE_PATH, Constants.PAYROLL_FE_BACKUP_PATH)
+                new FilesPipeline(appSettings.PAYROLL_API_LIVE_PATH,
+                                  appSettings.PAYROLL_API_BACKUP_PATH,
+                                  appSettings.PAYROLL_API_GIT_LIVE_BRANCH,
+                                  appSettings.GitCredentials),
             };
 
             List<Task> pipelineExecutionTasks = new();
 
-            foreach(var pipeline in pipelines)
+            foreach (var pipeline in pipelines)
             {
                 pipelineExecutionTasks.Add(pipeline.Execute());
             }

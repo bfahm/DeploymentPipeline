@@ -19,10 +19,16 @@ namespace DeploymentPipelineTool
                 var newDirectoryAbsolute = DirectoryTools.GetDirectoryFromFile(fileAbsolutePath);
                 var newDirectory = Path.Combine(destination, newDirectoryAbsolute);
 
-                Directory.CreateDirectory(newDirectory);
-                File.Copy(sourcePath, destFullPath, true);
-
-                Console.WriteLine(destFullPath);
+                try
+                {
+                    Directory.CreateDirectory(newDirectory);
+                    File.Copy(sourcePath, destFullPath, true);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"An error occured while trying to backup your files: {ex.Message}");
+                    throw;
+                }
             });
         }
     }
