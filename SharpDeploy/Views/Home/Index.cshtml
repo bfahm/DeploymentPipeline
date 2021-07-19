@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<div class="col-md-4">
+    <div class="card p-3 mb-2">
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-row align-items-center">
+                <div class="icon"> <i class="bx bxl-mailchimp"></i> </div>
+                <div class="ms-2 c-details">
+                    <h6 class="mb-0">Mailchimp</h6> <span>1 days ago</span>
+                </div>
+            </div>
+            <div class="btn badge deploy-btn" data-project="project_12345"> <span>Deploy</span> </div>
+        </div>
+        <div class="mt-5">
+            <h3 class="heading">Senior Product<br>Designer-Singapore</h3>
+            <div class="mt-5">
+                <div data-project="project_12345" class="progress progress-idle">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0">
+                    </div>
+                </div>
+
+                <div data-project="project_12345" class="progress progress-pending" hidden>
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                    </div>
+                </div>
+
+                <div data-project="project_12345" class="progress progress-done" hidden>
+                    <div class="progress-bar" role="progressbar"
+                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <span class="text1">
+                        32 Applied <span class="text2">
+                            of 50
+                            capacity
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".deploy-btn").click(function () {
+            $(".shell-session").html("");
+            var email = $("#input-git-email").val();
+            var token = $("#input-git-token").val();
+            var project = $(this).data("project");
+
+            //editProgress(false, true, false, project);
+
+            post(email, token, project);
+        });
+    });
+
+    function startTyping(txt) {
+        // setup typewriter effect in the terminal demo
+        if (document.getElementsByClassName('demo').length > 0) {
+            var i = 0;
+            var speed = 1;
+
+            function typeItOut() {
+                if (i < txt.length) {
+                    document.getElementsByClassName('demo')[0].innerHTML += txt.charAt(i);
+                    i++;
+                    setTimeout(typeItOut, speed);
+                }
+            }
+
+            setTimeout(typeItOut, 1800);
+        }
+    }
+
+    function post(email, token, project) {
+         $.ajax({
+            type: "POST",
+            url: "@Url.Action("Deploy")",
+            data: { git_email: email, git_token: token, project_id: project},
+            success: function (msg) {
+                startTyping(msg)
+                editProgress(false, false, true, project);
+            },
+            error: function (req, status, error) {
+                console.log(req);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+
+    function editProgress(idle, pending, done, project) {
+        $(`.progress-idle[data-project="${project}"]`).attr('hidden', !idle);
+        $(`.progress-pending[data-project="${project}"]`).attr('hidden', !pending);
+        $(`.progress-done[data-project="${project}"]`).attr('hidden', !done);
+    }
+
+</script>
