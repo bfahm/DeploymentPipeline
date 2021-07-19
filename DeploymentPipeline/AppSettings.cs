@@ -4,6 +4,7 @@
     {
         public string PAYROLL_API_LIVE_PATH { get; } = "";
         public string PAYROLL_API_BACKUP_PATH { get; } = "";
+        public string PAYROLL_API_SECRETS_PATH { get; } = "";
         public string PAYROLL_API_GIT_LIVE_BRANCH { get; } = "";
         public string PAYROLL_FE_LIVE_PATH { get; } = "";
         public string PAYROLL_FE_BACKUP_PATH { get; } = "";

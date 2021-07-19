@@ -14,6 +14,7 @@ namespace DeploymentPipeline
             {
                 new FilesPipeline(appSettings.PAYROLL_API_LIVE_PATH,
                                   appSettings.PAYROLL_API_BACKUP_PATH,
+                                  appSettings.PAYROLL_API_SECRETS_PATH,
                                   appSettings.PAYROLL_API_GIT_LIVE_BRANCH,
                                   appSettings.GitCredentials),
             };

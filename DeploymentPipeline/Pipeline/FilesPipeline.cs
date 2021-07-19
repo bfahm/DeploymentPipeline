@@ -1,28 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DeploymentPipeline.Pipeline
 {
-    class FilesPipeline : IPipeline
+    class FilesPipeline : BasePipeline, IPipeline
     {
-        // ☑ Backup files
-        // ☑ Fetch new files from remote git repo
-        // ⬜ Replace files
-
         private readonly string LivePath;
         private readonly string BackupPath;
+        private readonly string SecretsPath;
         private readonly string LiveGitBranch;
         private readonly GitCredentials GitCredentials;
 
-        public FilesPipeline(string livePath, string backupPath, string liveGitBranch, GitCredentials gitCredentials)
+        public FilesPipeline(string livePath, string backupPath, string secretsPath, string liveGitBranch, GitCredentials gitCredentials)
         {
             LivePath = livePath;
             BackupPath = backupPath;
             LiveGitBranch = liveGitBranch;
             GitCredentials = gitCredentials;
+            SecretsPath = secretsPath;
         }
 
         private Task Backup()
@@ -33,20 +28,37 @@ namespace DeploymentPipeline.Pipeline
             });
         }
 
+        private Task RestoreSercrets()
+        {
+            return Task.Run(() =>
+            {
+                FileManager.Move(SecretsPath, LivePath);
+            });
+        }
+
         public async Task Execute()
         {
             try
             {
-                Console.WriteLine("PERFORMING STEP 1: BACKUP");
-                await Backup();
+                await PerformStep(1, "Backup", () => 
+                {
+                    return Backup();
+                });
 
-                Console.WriteLine("");
-
-                Console.WriteLine("PERFORMING STEP 2: PULLING LATEST GIT CHANGES");
-                var gitClient = new GitClient(LivePath,
+                await PerformStep(2, "Pulling Latest GIT Changes", () =>
+                {
+                    var gitClient = new GitClient(LivePath,
                                               LiveGitBranch,
                                               GitCredentials);
-                gitClient.PullLatest();
+                    gitClient.PullLatest();
+
+                    return Task.CompletedTask;
+                });
+
+                await PerformStep(3, "Restoring secrets", () =>
+                {
+                    return RestoreSercrets();
+                });
             }
             catch (Exception ex)
             {
