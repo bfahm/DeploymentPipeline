@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace SharpDeploy.Utils
+namespace SharpDeploy.Core.Files
 {
     // TODO: add unit tests
     public static class DirectoryTools

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace SharpDeploy
+namespace SharpDeploy.Core.Clients
 {
     public class ShellClient
     {

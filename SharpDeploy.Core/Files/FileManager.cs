@@ -1,9 +1,9 @@
-﻿using SharpDeploy.Utils;
+﻿using SharpDeploy.Core.Files;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace SharpDeploy
+namespace SharpDeploy.Files
 {
     class FileManager
     {

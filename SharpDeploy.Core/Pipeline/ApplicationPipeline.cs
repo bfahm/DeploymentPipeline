@@ -1,4 +1,6 @@
-﻿using SharpDeploy.Models;
+﻿using SharpDeploy.Core.Clients;
+using SharpDeploy.Files;
+using SharpDeploy.Models;
 using System;
 
 namespace SharpDeploy.Pipeline

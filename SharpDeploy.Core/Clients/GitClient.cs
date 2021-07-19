@@ -3,7 +3,7 @@ using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using System;
 
-namespace SharpDeploy
+namespace SharpDeploy.Core.Clients
 {
     public class GitClient
     {
