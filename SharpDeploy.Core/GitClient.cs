@@ -1,9 +1,9 @@
-﻿using DeploymentPipeline.Models;
+﻿using SharpDeploy.Models;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using System;
 
-namespace DeploymentPipeline
+namespace SharpDeploy
 {
     public class GitClient
     {

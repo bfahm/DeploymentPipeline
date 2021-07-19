@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace DeploymentPipeline.Constants
+namespace SharpDeploy.Constants
 {
     public static class EnumExtentions
     {

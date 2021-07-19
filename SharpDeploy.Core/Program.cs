@@ -1,9 +1,9 @@
-﻿using DeploymentPipeline.Models;
-using DeploymentPipeline.Pipeline;
+﻿using SharpDeploy.Models;
+using SharpDeploy.Pipeline;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DeploymentPipeline
+namespace SharpDeploy
 {
     class Program
     {

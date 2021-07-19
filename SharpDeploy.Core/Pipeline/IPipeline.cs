@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DeploymentPipeline.Pipeline
+namespace SharpDeploy.Pipeline
 {
     public interface IPipeline
     {

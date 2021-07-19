@@ -1,8 +1,8 @@
-﻿using DeploymentPipeline.Models;
+﻿using SharpDeploy.Models;
 using System;
 using System.Threading.Tasks;
 
-namespace DeploymentPipeline.Pipeline
+namespace SharpDeploy.Pipeline
 {
     class DotNetApplicationPipeline : ApplicationPipeline, IPipeline
     {

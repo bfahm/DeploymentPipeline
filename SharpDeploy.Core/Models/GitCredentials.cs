@@ -1,4 +1,4 @@
-﻿namespace DeploymentPipeline.Models
+﻿namespace SharpDeploy.Models
 {
     public class GitCredentials
     {

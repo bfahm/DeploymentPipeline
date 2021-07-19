@@ -1,7 +1,7 @@
-﻿using DeploymentPipeline.Models;
+﻿using SharpDeploy.Models;
 using System;
 
-namespace DeploymentPipeline.Pipeline
+namespace SharpDeploy.Pipeline
 {
     class ApplicationPipeline : BasePipeline
     {

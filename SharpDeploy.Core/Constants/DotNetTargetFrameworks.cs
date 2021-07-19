@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DeploymentPipeline.Models
+namespace SharpDeploy.Models
 {
     public enum DotNetTargetFrameworks
     {

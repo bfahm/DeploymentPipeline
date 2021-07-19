@@ -1,9 +1,9 @@
-﻿using DeploymentPipeline.Utils;
+﻿using SharpDeploy.Utils;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace DeploymentPipeline
+namespace SharpDeploy
 {
     class FileManager
     {
