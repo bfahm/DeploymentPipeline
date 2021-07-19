@@ -1,4 +1,5 @@
-﻿using DeploymentPipeline.Pipeline;
+﻿using DeploymentPipeline.Models;
+using DeploymentPipeline.Pipeline;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,11 +13,14 @@ namespace DeploymentPipeline
 
             List<IPipeline> pipelines = new List<IPipeline>
             {
-                new FilesPipeline(appSettings.PAYROLL_API_LIVE_PATH,
+                new FilesPipeline(appSettings.PAYROLL_API_SOURCE_PATH,
                                   appSettings.PAYROLL_API_BACKUP_PATH,
+                                  appSettings.PublishSettings.OutputPath,
                                   appSettings.PAYROLL_API_SECRETS_PATH,
                                   appSettings.PAYROLL_API_GIT_LIVE_BRANCH,
-                                  appSettings.GitCredentials),
+                                  appSettings.GitCredentials,
+                                  appSettings.PublishSettings.TargetFramework,
+                                  appSettings.PublishSettings.EndpointPath),
             };
 
             List<Task> pipelineExecutionTasks = new();

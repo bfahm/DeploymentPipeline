@@ -32,5 +32,30 @@ namespace DeploymentPipeline
                 }
             });
         }
+
+        public static void DeleteAllFilesIn(string path)
+        {
+            var directoryInfo = new DirectoryInfo(path);
+
+            if (!directoryInfo.Exists)
+                return;
+
+            try
+            {
+                foreach (FileInfo file in directoryInfo.GetFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in directoryInfo.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occured while trying to delete old files: {ex.Message}");
+                throw;
+            }
+        }
     }
 }
