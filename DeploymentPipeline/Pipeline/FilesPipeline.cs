@@ -1,5 +1,4 @@
-﻿using DeploymentPipelineTool;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +29,7 @@ namespace DeploymentPipeline.Pipeline
         {
             return Task.Run(() =>
             {
-                BackupTool.Backup(LivePath, BackupPath);
+                FileManager.Move(LivePath, BackupPath);
             });
         }
 

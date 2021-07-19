@@ -1,9 +1,8 @@
-﻿using DeploymentPipeline;
-using DeploymentPipeline.Pipeline;
+﻿using DeploymentPipeline.Pipeline;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DeploymentPipelineTool
+namespace DeploymentPipeline
 {
     class Program
     {
