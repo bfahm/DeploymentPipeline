@@ -46,13 +46,13 @@ namespace DeploymentPipeline
                     (url, usernameFromUrl, types) =>
                         new UsernamePasswordCredentials()
                         {
-                            Username = _gitCredentials.USERNAME,
-                            Password = _gitCredentials.PASSWORD
+                            Username = _gitCredentials.UserName,
+                            Password = _gitCredentials.Password
                         });
 
                 // User information to create a merge commit
-                var signature = new Signature(new Identity(_gitCredentials.MERGE_USERNAME,
-                                                           _gitCredentials.MERGE_USER_EMAIL), 
+                var signature = new Signature(new Identity(_gitCredentials.MergeUserName,
+                                                           _gitCredentials.MergeUserEmail),
                                               DateTimeOffset.Now);
 
                 // Pull
@@ -62,8 +62,8 @@ namespace DeploymentPipeline
 
                     Console.WriteLine($"Pulled latest for current branch");
                     Console.WriteLine($"Merge Status: {mergeResult.Status}");
-                    
-                    if(mergeResult.Commit != null)
+
+                    if (mergeResult.Commit != null)
                     {
                         Console.WriteLine($"Latest Commit: {mergeResult.Commit.Message}");
                         Console.WriteLine($"Latest Commit by: {mergeResult.Commit.Author.Name}");

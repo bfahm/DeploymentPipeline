@@ -5,21 +5,27 @@ namespace DeploymentPipeline.Pipeline
 {
     public abstract class BasePipeline
     {
-        public async Task PerformStepAsync(int stepNumber, string stepName, Func<Task> action)
+        private int StepCounter = 0;
+        public async Task PerformStepAsync(string stepName, Func<Task> action)
         {
-            PrintStepDeclaration(stepNumber, stepName);
+            IncrementStepCounter();
+            PrintStepDeclaration(StepCounter, stepName);
             await action();
             PrintSplitter();
         }
 
-        public void PerformStep(int stepNumber, string stepName, Action action)
+        public void PerformStep(string stepName, Action action)
         {
-            PrintStepDeclaration(stepNumber, stepName);
+            IncrementStepCounter();
+            PrintStepDeclaration(StepCounter, stepName);
             action();
             PrintSplitter();
         }
 
+        private void IncrementStepCounter() => StepCounter += 1;
+
         private void PrintStepDeclaration(int stepNumber, string stepName) => Console.WriteLine($"PERFORMING STEP #{stepNumber}: {stepName}");
+
         private void PrintSplitter()
         {
             Console.WriteLine("");

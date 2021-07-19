@@ -9,19 +9,18 @@ namespace DeploymentPipeline
     {
         static async Task Main(string[] args)
         {
-            AppSettings appSettings = new();
+            DotNetApplication payroll = new();      // Should be initialized
+            GitCredentials gitCredentials = new();  // Should be initialized
 
-            List<IPipeline> pipelines = new List<IPipeline>
-            {
-                new FilesPipeline(appSettings.PAYROLL_API_SOURCE_PATH,
-                                  appSettings.PAYROLL_API_BACKUP_PATH,
-                                  appSettings.PublishSettings.OutputPath,
-                                  appSettings.PAYROLL_API_SECRETS_PATH,
-                                  appSettings.PAYROLL_API_GIT_LIVE_BRANCH,
-                                  appSettings.GitCredentials,
-                                  appSettings.PublishSettings.TargetFramework,
-                                  appSettings.PublishSettings.EndpointPath),
-            };
+            // Initialize Pipelines
+            var payrollPipeline = new DotNetApplicationPipeline(payroll, gitCredentials);
+
+            await RunPipelines(payrollPipeline);
+        }
+
+        static async Task RunPipelines(params IPipeline[] pipelines)
+        {
+            // Support for running multiple pipelines in parallel
 
             List<Task> pipelineExecutionTasks = new();
 
