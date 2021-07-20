@@ -29,7 +29,8 @@ namespace SharpDeploy
                     BackupPath = "D:\\pipelinetest\\Payroll-Backup",
                     OutputPath = "D:\\pipelinetest\\Payroll-Output",
                     GitLiveBranch = "master",
-                    TargetFramework = DotNetTargetFrameworks.ThreePointOne.ToNameValue()
+                    TargetFramework = DotNetTargetFrameworks.ThreePointOne.ToNameValue(),
+                    IISSiteName = "PayrollAngular"
                 }
             };
         }

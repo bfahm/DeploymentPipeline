@@ -18,5 +18,6 @@
         public string EndpointPath { get; set; }
         public string TargetFramework { get; set; }
         public string SecretsPath { get; set; }
+        public string IISSiteName { get; set; }
     }
 }

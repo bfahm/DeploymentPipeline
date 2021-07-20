@@ -9,6 +9,7 @@ namespace SharpDeploy.Pipeline
 {
     class DotNetApplicationPipeline : ApplicationPipeline, IPipeline
     {
+        private const string IIS_WORKING_DIRECTORY = "c:\\windows\\system32\\inetsrv";
         private readonly DotNetApplication dotnetApplication;
         private readonly InternalConsole _internalConsole;
 
@@ -23,7 +24,22 @@ namespace SharpDeploy.Pipeline
         private void PublishSourceFiles()
         {
             var cmd = ShellClient.BuildDotNetPublishCommand(dotnetApplication.OutputPath, dotnetApplication.TargetFramework);
-            ShellClient.Run(dotnetApplication.EndpointPath, cmd);
+            var results = ShellClient.Run(dotnetApplication.EndpointPath, cmd);
+            _internalConsole.WriteLine(results);
+        }
+
+        private void StartIIS()
+        {
+            var cmd = ShellClient.BuildIISStartCommand(dotnetApplication.IISSiteName);
+            var results = ShellClient.Run(IIS_WORKING_DIRECTORY, cmd, true);
+            _internalConsole.WriteLine(results);
+        }
+
+        private void StopIIS()
+        {
+            var cmd = ShellClient.BuildIISStopCommand(dotnetApplication.IISSiteName);
+            var results = ShellClient.Run(IIS_WORKING_DIRECTORY, cmd, true);
+            _internalConsole.WriteLine(results);
         }
 
         public Task Execute()
@@ -35,6 +51,11 @@ namespace SharpDeploy.Pipeline
                     // From Base..
                     ExecuteSteps();
 
+                    PerformStep("Stopping app in IIS", () =>
+                    {
+                        StopIIS();
+                    });
+
                     PerformStep("Restoring secrets", () =>
                     {
                         RestoreSercrets();
@@ -43,6 +64,11 @@ namespace SharpDeploy.Pipeline
                     PerformStep("Publishing new source files", () =>
                     {
                         PublishSourceFiles();
+                    });
+
+                    PerformStep("Starting app in IIS", () =>
+                    {
+                        StartIIS();
                     });
                 }
                 catch (Exception ex)
