@@ -20,6 +20,9 @@ namespace SharpDeploy
                 new DotNetApplication
                 {
                     Id = "PAYROLL_1234",
+                    Name = "Backend-API",
+                    LastDeployed = "1 hr ago",
+                    Title = "Payroll",
                     SourcePath = "D:\\pipelinetest\\Payroll",
                     EndpointPath = "D:\\pipelinetest\\Payroll\\FlairsPayroll",
                     SecretsPath = "D:\\pipelinetest\\Secrets",
@@ -47,6 +50,11 @@ namespace SharpDeploy
             await RunPipelines(applicationPipeline);
 
             return applicationConsole.ToString();
+        }
+
+        public List<Application> GetListOfApplications()
+        {
+            return StoredApplications;
         }
 
         private static async Task RunPipelines(params IPipeline[] pipelines)

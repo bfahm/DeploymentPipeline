@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SharpDeploy.Controllers
@@ -9,16 +6,23 @@ namespace SharpDeploy.Controllers
     [Route("/")]
     public class HomeController : Controller
     {
+        private readonly Deployer _deployer;
+
+        public HomeController()
+        {
+            _deployer = new Deployer();
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var listOfApps = _deployer.GetListOfApplications();
+            return View(listOfApps);
         }
 
         [HttpPost]
         public async Task<string> Deploy(string git_email, string git_token, string project_id)
         {
-            Deployer deployer = new Deployer();
-            return await deployer.DeployDotNet(project_id, git_email, git_token);
+            return await _deployer.DeployDotNet(project_id, git_email, git_token);
         }
     }
 }
