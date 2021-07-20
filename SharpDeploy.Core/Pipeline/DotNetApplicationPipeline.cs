@@ -1,4 +1,5 @@
 ﻿using SharpDeploy.Core.Clients;
+using SharpDeploy.Core.Utils;
 using SharpDeploy.Files;
 using SharpDeploy.Models;
 using System;
@@ -9,10 +10,12 @@ namespace SharpDeploy.Pipeline
     class DotNetApplicationPipeline : ApplicationPipeline, IPipeline
     {
         private readonly DotNetApplication dotnetApplication;
+        private readonly InternalConsole _internalConsole;
 
-        public DotNetApplicationPipeline(DotNetApplication application, GitCredentials gitCredentials) : base(application, gitCredentials)
+        public DotNetApplicationPipeline(DotNetApplication application, GitCredentials gitCredentials, InternalConsole internalConsole) : base(application, gitCredentials, internalConsole)
         {
             dotnetApplication = application;
+            _internalConsole = internalConsole;
         }
 
         private void RestoreSercrets() => FileManager.Move(((DotNetApplication)_application).SecretsPath, _application.OutputPath);
@@ -44,8 +47,8 @@ namespace SharpDeploy.Pipeline
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Execution terminated due to an exception:");
-                    Console.WriteLine(ex.Message);
+                    _internalConsole.WriteLine($"Execution terminated due to an exception:");
+                    _internalConsole.WriteLine(ex.Message);
                 }
             });
         }

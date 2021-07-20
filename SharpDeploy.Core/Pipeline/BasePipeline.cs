@@ -1,11 +1,20 @@
-﻿using System;
+﻿using SharpDeploy.Core.Utils;
+using System;
 using System.Threading.Tasks;
 
 namespace SharpDeploy.Pipeline
 {
     public abstract class BasePipeline
     {
+        private readonly InternalConsole _internalConsole;
+
         private int StepCounter = 0;
+
+        protected BasePipeline(InternalConsole internalConsole)
+        {
+            _internalConsole = internalConsole;
+        }
+
         public async Task PerformStepAsync(string stepName, Func<Task> action)
         {
             IncrementStepCounter();
@@ -24,12 +33,12 @@ namespace SharpDeploy.Pipeline
 
         private void IncrementStepCounter() => StepCounter += 1;
 
-        private void PrintStepDeclaration(int stepNumber, string stepName) => Console.WriteLine($"PERFORMING STEP #{stepNumber}: {stepName}");
+        private void PrintStepDeclaration(int stepNumber, string stepName) => _internalConsole.WriteLine($"PERFORMING STEP #{stepNumber}: {stepName}");
 
         private void PrintSplitter()
         {
-            Console.WriteLine("");
-            Console.WriteLine("=========================================");
+            _internalConsole.WriteLine("");
+            _internalConsole.WriteLine("=========================================");
         }
     }
 }

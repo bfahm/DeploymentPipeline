@@ -15,9 +15,10 @@ namespace SharpDeploy.Controllers
         }
 
         [HttpPost]
-        public string Deploy(string git_email, string git_token, string project_id)
+        public async Task<string> Deploy(string git_email, string git_token, string project_id)
         {
-            return git_email + " " + git_token + " " + project_id;
+            Deployer deployer = new Deployer();
+            return await deployer.DeployDotNet(project_id, git_email, git_token);
         }
     }
 }

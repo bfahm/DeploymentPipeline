@@ -1,4 +1,5 @@
 ﻿using SharpDeploy.Core.Clients;
+using SharpDeploy.Core.Utils;
 using SharpDeploy.Files;
 using SharpDeploy.Models;
 using System;
@@ -9,11 +10,13 @@ namespace SharpDeploy.Pipeline
     {
         protected readonly Application _application;
         private readonly GitCredentials _gitCredentials;
+        private readonly InternalConsole _internalConsole;
 
-        public ApplicationPipeline(Application application, GitCredentials gitCredentials)
+        public ApplicationPipeline(Application application, GitCredentials gitCredentials, InternalConsole internalConsole) : base(internalConsole)
         {
             _application = application;
             _gitCredentials = gitCredentials;
+            _internalConsole = internalConsole;
         }
 
         private void Backup()
@@ -36,7 +39,8 @@ namespace SharpDeploy.Pipeline
             {
                 var gitClient = new GitClient(_application.SourcePath,
                                           _application.GitLiveBranch,
-                                          _gitCredentials);
+                                          _gitCredentials,
+                                          _internalConsole);
                 gitClient.PullLatest();
             });
 

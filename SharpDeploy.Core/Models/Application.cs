@@ -2,6 +2,7 @@
 {
     public abstract class Application
     {
+        public string Id { get; set; }
         public string SourcePath { get; set; }
         public string BackupPath { get; set; }
         public string OutputPath { get; set; }

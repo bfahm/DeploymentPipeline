@@ -2,6 +2,7 @@
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using System;
+using SharpDeploy.Core.Utils;
 
 namespace SharpDeploy.Core.Clients
 {
@@ -10,12 +11,14 @@ namespace SharpDeploy.Core.Clients
         private readonly string _repositoryPath;
         private readonly string _deploymentBranch;
         private readonly GitCredentials _gitCredentials;
+        private readonly InternalConsole internalConsole;
 
-        public GitClient(string repositoryPath, string deploymentBranch, GitCredentials gitCredentials)
+        public GitClient(string repositoryPath, string deploymentBranch, GitCredentials gitCredentials, InternalConsole internalConsole)
         {
             _repositoryPath = repositoryPath;
             _deploymentBranch = deploymentBranch;
             _gitCredentials = gitCredentials;
+            this.internalConsole = internalConsole;
         }
 
         private void Checkout()
@@ -28,14 +31,14 @@ namespace SharpDeploy.Core.Clients
                     return;
 
                 Branch currentBranch = Commands.Checkout(repo, branch);
-                Console.WriteLine($"Checked out {currentBranch.FriendlyName}");
+                internalConsole.WriteLine($"Checked out {currentBranch.FriendlyName}");
             }
         }
 
         public void PullLatest()
         {
             Checkout();
-            Console.WriteLine("");
+            internalConsole.WriteLine("");
 
             using (var repo = new Repository(_repositoryPath))
             {
@@ -60,18 +63,18 @@ namespace SharpDeploy.Core.Clients
                 {
                     var mergeResult = Commands.Pull(repo, signature, options);
 
-                    Console.WriteLine($"Pulled latest for current branch");
-                    Console.WriteLine($"Merge Status: {mergeResult.Status}");
+                    internalConsole.WriteLine($"Pulled latest for current branch");
+                    internalConsole.WriteLine($"Merge Status: {mergeResult.Status}");
 
                     if (mergeResult.Commit != null)
                     {
-                        Console.WriteLine($"Latest Commit: {mergeResult.Commit.Message}");
-                        Console.WriteLine($"Latest Commit by: {mergeResult.Commit.Author.Name}");
+                        internalConsole.WriteLine($"Latest Commit: {mergeResult.Commit.Message}");
+                        internalConsole.WriteLine($"Latest Commit by: {mergeResult.Commit.Author.Name}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"An error occured while pulling: {ex.Message}");
+                    internalConsole.WriteLine($"An error occured while pulling: {ex.Message}");
                     throw;
                 }
             }

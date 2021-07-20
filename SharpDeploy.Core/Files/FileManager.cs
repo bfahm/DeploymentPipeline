@@ -20,16 +20,8 @@ namespace SharpDeploy.Files
                 var newDirectoryAbsolute = DirectoryTools.GetDirectoryFromFile(fileAbsolutePath);
                 var newDirectory = Path.Combine(destination, newDirectoryAbsolute);
 
-                try
-                {
-                    Directory.CreateDirectory(newDirectory);
-                    File.Copy(sourcePath, destFullPath, true);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"An error occured while trying to backup your files: {ex.Message}");
-                    throw;
-                }
+                Directory.CreateDirectory(newDirectory);
+                File.Copy(sourcePath, destFullPath, true);
             });
         }
 
@@ -40,21 +32,13 @@ namespace SharpDeploy.Files
             if (!directoryInfo.Exists)
                 return;
 
-            try
+            foreach (FileInfo file in directoryInfo.GetFiles())
             {
-                foreach (FileInfo file in directoryInfo.GetFiles())
-                {
-                    file.Delete();
-                }
-                foreach (DirectoryInfo dir in directoryInfo.GetDirectories())
-                {
-                    dir.Delete(true);
-                }
+                file.Delete();
             }
-            catch (Exception ex)
+            foreach (DirectoryInfo dir in directoryInfo.GetDirectories())
             {
-                Console.WriteLine($"An error occured while trying to delete old files: {ex.Message}");
-                throw;
+                dir.Delete(true);
             }
         }
     }

@@ -12,19 +12,7 @@ namespace SharpDeploy.Core.Files
         {
             List<string> filesPaths = null;
 
-            try
-            {
-                filesPaths = root.GetFiles("*.*").Select(f => f.FullName).ToList();
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                // TODO: Try to elevate your privileges and access the file again.
-                Console.WriteLine(e.Message);
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            filesPaths = root.GetFiles("*.*").Select(f => f.FullName).ToList();
 
             if (filesPaths != null)
             {
