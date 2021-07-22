@@ -27,8 +27,7 @@ namespace SharpDeploy.ConsoleApp
         static async Task Run(IServiceProvider serviceProvider)
         {
             var entryPoint = serviceProvider.GetService<EntryPoint>();
-            var result = await entryPoint.Deploy();
-            Console.WriteLine(result);
+            await entryPoint.Deploy();
         }
     }
 }

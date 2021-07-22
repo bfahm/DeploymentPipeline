@@ -1,19 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SharpDeploy.Core.Utils
 {
     public class InternalConsole
     {
-        public InternalConsole(string projectId)
+        public InternalConsole()
         {
-            ProjectId = projectId;
             Logs = new List<string>();
         }
 
-        public string ProjectId { get; }
         public List<string> Logs { get; }
 
-        public void WriteLine(string text) => Logs.Add(text);
+        public void WriteLine(string text)
+        {
+            Logs.Add(text);
+            Console.WriteLine(text);
+        }
 
         public override string ToString()
         {

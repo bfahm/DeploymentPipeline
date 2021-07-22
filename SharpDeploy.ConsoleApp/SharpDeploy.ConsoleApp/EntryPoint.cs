@@ -30,7 +30,7 @@ namespace SharpDeploy.ConsoleApp
             }
         }
 
-        public async Task<string> Deploy()
+        public async Task Deploy()
         {
             Console.WriteLine("----- SHARP DEPLOYER -----");
             Console.WriteLine("");
@@ -46,9 +46,11 @@ namespace SharpDeploy.ConsoleApp
             var gitEmail = Console.ReadLine();
             Console.Write("Git Personal Token:\t");
             var gitToken = Console.ReadLine();
-            
 
-            return await _deployer.DeployDotNet(projectId, gitEmail, gitToken);
+            Console.WriteLine("");
+            Console.WriteLine("");
+
+            await _deployer.DeployDotNet(projectId, gitEmail, gitToken);
         }
     }
 }

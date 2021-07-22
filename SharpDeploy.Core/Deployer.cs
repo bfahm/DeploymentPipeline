@@ -10,11 +10,13 @@ namespace SharpDeploy
 {
     public class Deployer
     {
-
+        private readonly InternalConsole internalConsole;
         private List<Application> StoredApplications;
 
-        public Deployer()
+        public Deployer(InternalConsole internalConsole)
         {
+            this.internalConsole = internalConsole;
+
             StoredApplications = new List<Application>
             {
                 new DotNetApplication
@@ -45,12 +47,11 @@ namespace SharpDeploy
             var gitCredentials = new GitCredentials(gitUserName, gitToken);
 
             // Initialize Pipelines
-            var applicationConsole = new InternalConsole(application.Id);
-            var applicationPipeline = new DotNetApplicationPipeline(application, gitCredentials, applicationConsole);
+            var applicationPipeline = new DotNetApplicationPipeline(application, gitCredentials, internalConsole);
 
             await RunPipelines(applicationPipeline);
 
-            return applicationConsole.ToString();
+            return internalConsole.ToString();
         }
 
         public List<Application> GetListOfApplications()
