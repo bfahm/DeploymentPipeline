@@ -1,0 +1,41 @@
+﻿@model Application
+
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body ">
+                <div class="text-right"> <i class="fa fa-close close" data-dismiss="modal"></i> </div>
+                <div class="px-4 py-5">
+                    <h5 class="text-uppercase">@Model.Title</h5>
+                    <h4 class="mt-5 theme-color mb-5">@Model.Name</h4>
+                    <span class="theme-color">Details:</span>
+                    <div class="d-flex justify-content-between">
+                        <span class="font-weight-bold">Project Id</span>
+                        <span class="text-muted">@Model.Id</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small>Source Path</small>
+                        <small>@Model.SourcePath</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small>Output Path</small>
+                        <small>@Model.OutputPath</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small>Backup Path</small>
+                        <small>@Model.BackupPath</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small>Git Branch</small>
+                        <small>@Model.GitLiveBranch</small>
+                    </div>
+                    @if(Model is DotNetApplication dotNetModel)
+                    {
+                        <partial name="_ModalDotNet" model="dotNetModel"/>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
