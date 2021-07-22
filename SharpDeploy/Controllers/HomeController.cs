@@ -8,9 +8,9 @@ namespace SharpDeploy.Controllers
     {
         private readonly Deployer _deployer;
 
-        public HomeController()
+        public HomeController(Deployer deployer)
         {
-            _deployer = new Deployer();
+            _deployer = deployer;
         }
 
         public IActionResult Index()
