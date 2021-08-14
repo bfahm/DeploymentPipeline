@@ -3,6 +3,7 @@ using SharpDeploy.Core.Utils;
 using SharpDeploy.Files;
 using SharpDeploy.Models;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace SharpDeploy.Pipeline
@@ -19,7 +20,15 @@ namespace SharpDeploy.Pipeline
             _internalConsole = internalConsole;
         }
 
-        private void RestoreSercrets() => FileManager.Move(((DotNetApplication)_application).SecretsPath, _application.SourceCodePath);
+        private void RestoreSercrets()
+        {
+            var secretsPath = ((DotNetApplication)_application).SecretsPath;
+            
+            if (Directory.Exists(secretsPath))
+                FileManager.Move(secretsPath, _application.SourceCodePath);
+            else
+                _internalConsole.WriteLine("[WRN] No restore secret operation was made, secrets folder does not exist.");
+        }
 
         private void PublishSourceFiles()
         {

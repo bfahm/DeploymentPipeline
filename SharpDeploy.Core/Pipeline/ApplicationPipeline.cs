@@ -3,6 +3,7 @@ using SharpDeploy.Core.Utils;
 using SharpDeploy.Files;
 using SharpDeploy.Models;
 using System;
+using System.IO;
 
 namespace SharpDeploy.Pipeline
 {
@@ -23,7 +24,11 @@ namespace SharpDeploy.Pipeline
         {
             var currentTime = DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss");
             var stampedBackupPath = $"{_application.BackupPath}_{currentTime}";
-            FileManager.Move(_application.OutputPath, stampedBackupPath);
+
+            if (Directory.Exists(_application.OutputPath))
+                FileManager.Move(_application.OutputPath, stampedBackupPath);
+            else
+                _internalConsole.WriteLine("[WRN] No backup operation was made, output folder does not exist.");
         }
 
         private void DeleteOldFiles() => FileManager.DeleteAllFilesIn(_application.OutputPath);
