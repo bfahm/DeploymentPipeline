@@ -38,7 +38,7 @@ namespace SharpDeploy.Pipeline
             PerformStep("Pulling Latest GIT Changes", () =>
             {
                 var gitClient = new GitClient(_internalConsole);
-                gitClient.DownloadSourceCode(_application.WorkingDirectory, 
+                gitClient.DownloadSourceCode(_application.SourceCodePath, 
                                           _application.GitRemotePath,
                                           _application.GitLiveBranch,
                                           _gitCredentials);
