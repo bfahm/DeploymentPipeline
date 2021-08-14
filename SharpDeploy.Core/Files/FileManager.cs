@@ -1,5 +1,4 @@
 ﻿using SharpDeploy.Core.Files;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -38,7 +37,21 @@ namespace SharpDeploy.Files
             }
             foreach (DirectoryInfo dir in directoryInfo.GetDirectories())
             {
+                SetAttributesNormal(dir);
                 dir.Delete(true);
+            }
+        }
+
+        private static void SetAttributesNormal(DirectoryInfo dir)
+        {
+            foreach (var subDir in dir.GetDirectories())
+            {
+                SetAttributesNormal(subDir);
+            }
+
+            foreach (var file in dir.GetFiles())
+            {
+                file.Attributes = FileAttributes.Normal;
             }
         }
     }

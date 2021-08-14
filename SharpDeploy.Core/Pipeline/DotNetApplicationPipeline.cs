@@ -51,6 +51,8 @@ namespace SharpDeploy.Pipeline
             _internalConsole.WriteLine(results);
         }
 
+        private void DeleteSourceFiles() => FileManager.DeleteAllFilesIn(_application.SourceCodePath);
+
         public Task Execute()
         {
             return Task.Run(() =>
@@ -73,6 +75,11 @@ namespace SharpDeploy.Pipeline
                     PerformStep("Publishing new source files", () =>
                     {
                         PublishSourceFiles();
+                    });
+
+                    PerformStep("Deleting source files", () =>
+                    {
+                        DeleteSourceFiles();
                     });
 
                     PerformStep("Starting app in IIS", () =>
