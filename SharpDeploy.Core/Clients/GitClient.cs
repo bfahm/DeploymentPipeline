@@ -3,80 +3,145 @@ using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using System;
 using SharpDeploy.Core.Utils;
+using System.Linq;
 
 namespace SharpDeploy.Core.Clients
 {
     public class GitClient
     {
-        private readonly string _repositoryPath;
-        private readonly string _deploymentBranch;
-        private readonly GitCredentials _gitCredentials;
-        private readonly InternalConsole internalConsole;
+        private readonly InternalConsole _internalConsole;
 
-        public GitClient(string repositoryPath, string deploymentBranch, GitCredentials gitCredentials, InternalConsole internalConsole)
+        public GitClient(InternalConsole internalConsole)
         {
-            _repositoryPath = repositoryPath;
-            _deploymentBranch = deploymentBranch;
-            _gitCredentials = gitCredentials;
-            this.internalConsole = internalConsole;
+            _internalConsole = internalConsole;
         }
 
-        private void Checkout()
+        private string Init(string workingDirectory) => Repository.Init(workingDirectory);
+
+        private void SetOrigin(Repository repository, string remoteUrl)
         {
-            using (var repo = new Repository(_repositoryPath))
+            try
             {
-                var branch = repo.Branches[_deploymentBranch];
+                Remote remote = repository.Network.Remotes.Add("origin", remoteUrl);
 
-                if (branch == null)
-                    return;
-
-                Branch currentBranch = Commands.Checkout(repo, branch);
-                internalConsole.WriteLine($"Checked out {currentBranch.FriendlyName}");
+                repository.Branches.Update(repository.Head,
+                    b => b.Remote = remote.Name,
+                    b => b.UpstreamBranch = repository.Head.CanonicalName);
+            }
+            catch (Exception ex)
+            {
+                _internalConsole.WriteLine($"{ex.Message}");
             }
         }
 
-        public void PullLatest()
+        private FetchOptions SetFetchOptions(GitCredentials gitCredentials)
         {
-            Checkout();
-            internalConsole.WriteLine("");
+            FetchOptions options = new FetchOptions();
+            options.CredentialsProvider = new CredentialsHandler((url, usernameFromUrl, types) =>
+                 new UsernamePasswordCredentials()
+                 {
+                     Username = gitCredentials.UserName,
+                     Password = gitCredentials.Password
+                 });
 
-            using (var repo = new Repository(_repositoryPath))
+            return options;
+        }
+
+        private void Fetch(Repository repository, GitCredentials gitCredentials)
+        {
+            string logMessage = "";
+            var fetchOptions = SetFetchOptions(gitCredentials);
+
+            var remote = repository.Network.Remotes["origin"];
+            var refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+            Commands.Fetch(repository, remote.Name, refSpecs, fetchOptions, logMessage);
+
+            _internalConsole.WriteLine($"{logMessage}");
+        }
+
+        private void ConfigureRemoteTracking(Repository repository, string deploymentBranch)
+        {
+            var trackingBranch = repository.Branches[$"refs/remotes/origin/{deploymentBranch}"];
+
+            if (trackingBranch == null)
+                throw new Exception("GitClient: Invalid branch name.");
+
+            if (!trackingBranch.IsRemote)
+                throw new Exception("GitClient: Provided branch is not a remote branch.");
+
+            Branch localBranch = repository.Head;
+            repository.Branches.Update(localBranch, b => b.TrackedBranch = trackingBranch.CanonicalName);
+
+            _internalConsole.WriteLine($"Configured remote tracking, {trackingBranch.CanonicalName}");
+        }
+
+        private PullOptions SetPullOptions(GitCredentials gitCredentials)
+        {
+            // Credential information to fetch
+            PullOptions options = new PullOptions();
+
+            options.MergeOptions = new MergeOptions()
             {
-                // Credential information to fetch
-                PullOptions options = new PullOptions();
-                options.FetchOptions = new FetchOptions();
-                options.FetchOptions.CredentialsProvider = new CredentialsHandler(
-                    (url, usernameFromUrl, types) =>
-                        new UsernamePasswordCredentials()
-                        {
-                            Username = _gitCredentials.UserName,
-                            Password = _gitCredentials.Password
-                        });
+                FastForwardStrategy = FastForwardStrategy.Default
+            };
 
-                // User information to create a merge commit
-                var signature = new Signature(new Identity(_gitCredentials.MergeUserName,
-                                                           _gitCredentials.MergeUserEmail),
-                                              DateTimeOffset.Now);
-
-                // Pull
-                try
-                {
-                    var mergeResult = Commands.Pull(repo, signature, options);
-
-                    internalConsole.WriteLine($"Pulled latest for current branch");
-                    internalConsole.WriteLine($"Merge Status: {mergeResult.Status}");
-
-                    if (mergeResult.Commit != null)
+            options.FetchOptions = new FetchOptions();
+            options.FetchOptions.CredentialsProvider = new CredentialsHandler(
+                (url, usernameFromUrl, types) =>
+                    new UsernamePasswordCredentials()
                     {
-                        internalConsole.WriteLine($"Latest Commit: {mergeResult.Commit.Message}");
-                        internalConsole.WriteLine($"Latest Commit by: {mergeResult.Commit.Author.Name}");
-                    }
-                }
-                catch (Exception ex)
+                        Username = gitCredentials.UserName,
+                        Password = gitCredentials.Password
+                    });
+
+            return options;
+        }
+
+        private Signature SetSignature(GitCredentials gitCredentials)
+        {
+            // User information to create a merge commit
+            return new Signature(new Identity(gitCredentials.MergeUserName, 
+                                              gitCredentials.MergeUserEmail), 
+                                 DateTimeOffset.Now);
+        }
+
+        private void PullLatest(Repository repository, GitCredentials gitCredentials)
+        {
+            var options = SetPullOptions(gitCredentials);
+            var signature = SetSignature(gitCredentials);
+
+            try
+            {
+                var mergeResult = Commands.Pull(repository, signature, options);
+
+                _internalConsole.WriteLine($"Pulled latest for current branch");
+                _internalConsole.WriteLine($"Merge Status: {mergeResult.Status}");
+
+                if (mergeResult.Commit != null)
                 {
-                    internalConsole.WriteLine($"An error occured while pulling: {ex.Message}");
-                    throw;
+                    _internalConsole.WriteLine($"Latest Commit: {mergeResult.Commit.Message}");
+                    _internalConsole.WriteLine($"Latest Commit by: {mergeResult.Commit.Author.Name}");
                 }
+            }
+            catch (Exception ex)
+            {
+                _internalConsole.WriteLine($"An error occured while pulling: {ex.Message}");
+                throw;
+            }
+        }
+
+        public void DownloadSourceCode(string workingDirectory, string remotePath, string deploymentBranch, GitCredentials gitCredentials)
+        {
+            _internalConsole.WriteLine("");
+
+            var rootedPath = Init(workingDirectory);
+
+            using (var repo = new Repository(rootedPath))
+            {
+                SetOrigin(repo, remotePath);
+                Fetch(repo, gitCredentials);
+                ConfigureRemoteTracking(repo, deploymentBranch);
+                PullLatest(repo, gitCredentials);
             }
         }
     }

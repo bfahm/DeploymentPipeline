@@ -23,7 +23,7 @@ namespace SharpDeploy.Pipeline
         {
             var currentTime = DateTime.Now.ToString("yyyy-dd-M--HH-mm-ss");
             var stampedBackupPath = $"{_application.BackupPath}_{currentTime}";
-            FileManager.Move(_application.SourcePath, stampedBackupPath);
+            FileManager.Move(_application.OutputPath, stampedBackupPath);
         }
 
         private void DeleteOldFiles() => FileManager.DeleteAllFilesIn(_application.OutputPath);
@@ -37,11 +37,11 @@ namespace SharpDeploy.Pipeline
 
             PerformStep("Pulling Latest GIT Changes", () =>
             {
-                var gitClient = new GitClient(_application.SourcePath,
+                var gitClient = new GitClient(_internalConsole);
+                gitClient.DownloadSourceCode(_application.WorkingDirectory, 
+                                          _application.GitRemotePath,
                                           _application.GitLiveBranch,
-                                          _gitCredentials,
-                                          _internalConsole);
-                gitClient.PullLatest();
+                                          _gitCredentials);
             });
 
             PerformStep("Deleting old files", () =>

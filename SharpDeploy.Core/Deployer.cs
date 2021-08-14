@@ -25,12 +25,13 @@ namespace SharpDeploy
                     Name = "Backend-API",
                     LastDeployed = "1 hr ago",
                     Title = "Payroll",
-                    SourcePath = "D:\\pipelinetest\\Payroll",
-                    EndpointPath = "D:\\pipelinetest\\Payroll\\FlairsPayroll",
+                    WorkingDirectory = "D:\\pipelinetest\\Payroll-Temp-Src-Code",
+                    GitRemotePath = "https://github.com/FlairstechProductUnit/Payroll.git",
+                    EndpointPath = "D:\\pipelinetest\\Payroll-Temp-Src-Code\\FlairsPayroll",
                     SecretsPath = "D:\\pipelinetest\\Secrets",
                     BackupPath = "D:\\pipelinetest\\Payroll-Backup",
                     OutputPath = "D:\\pipelinetest\\Payroll-Output",
-                    GitLiveBranch = "master",
+                    GitLiveBranch = "staging",
                     TargetFramework = DotNetTargetFrameworks.ThreePointOne.ToNameValue(),
                     IISSiteName = "PayrollAngular"
                 }

@@ -7,9 +7,10 @@
         public string Name { get; set; }
         public string LastDeployed { get; set; }
         public string ImagePath { get; set; }
-        public string SourcePath { get; set; }
+        public string WorkingDirectory { get; set; }
         public string BackupPath { get; set; }
         public string OutputPath { get; set; }
+        public string GitRemotePath { get; set; }
         public string GitLiveBranch { get; set; }
     }
 

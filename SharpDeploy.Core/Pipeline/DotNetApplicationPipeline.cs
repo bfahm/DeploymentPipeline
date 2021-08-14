@@ -19,7 +19,7 @@ namespace SharpDeploy.Pipeline
             _internalConsole = internalConsole;
         }
 
-        private void RestoreSercrets() => FileManager.Move(((DotNetApplication)_application).SecretsPath, _application.OutputPath);
+        private void RestoreSercrets() => FileManager.Move(((DotNetApplication)_application).SecretsPath, _application.WorkingDirectory);
 
         private void PublishSourceFiles()
         {
