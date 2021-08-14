@@ -103,6 +103,7 @@ function editProgress(idle, pending, done, project) {
     $(`.progress-idle[data-project="${project}"]`).attr('hidden', !idle);
     $(`.progress-pending[data-project="${project}"]`).attr('hidden', !pending);
     $(`.progress-done[data-project="${project}"]`).attr('hidden', !done);
+    $(`.deploy-btn[data-project="${project}"]`).attr('hidden', pending);
 }
 
 </script>
